@@ -3,6 +3,7 @@
 
 ## 💻 Arquitetura
 A figura abaixo representa a modelagem lógica da aplicação e DER - Diagrama de Entidades e Relacionamentos.
+
 <img src="docs\DER.png" alt="diagram">
 
 <hr />
