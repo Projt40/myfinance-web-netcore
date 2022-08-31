@@ -1,5 +1,6 @@
 using myfinance_web_netcore.Infra;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -24,16 +25,17 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
-CreateDALInstance(app);
+CriaInstanciaDAL(app);
 
 app.Run();
 
-void CreateDALInstance(WebApplication app)
+void CriaInstanciaDAL(WebApplication app)
 {
     IConfiguration configuration = app.Configuration;
     DAL.Configuration = configuration;
-    DAL dalInstance = DAL.GetInstance;
-    dalInstance.Connect();
+    var objDal = DAL.GetInstance();
+    objDal.Conectar();
 }

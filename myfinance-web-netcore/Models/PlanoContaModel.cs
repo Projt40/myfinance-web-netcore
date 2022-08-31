@@ -1,92 +1,95 @@
-using System.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using myfinance_web_netcore.Infra;
 
 namespace myfinance_web_netcore.Models
 {
-    public class AccountPlanModel
+    public class PlanoContaModel
     {
         public int? Id { get; set; }
 
-        public string? Description { get; set; }
+        public string? Descricao { get; set; }
 
-        public string? Type { get; set; }
+        public string? Tipo { get; set; }
 
-        public void Insert()
+        public void Inserir()
         {
-            List<AccountPlanModel> accountPlans = new List<AccountPlanModel>();
-            DAL dalInstance = DAL.GetInstance;
-            dalInstance.Connect();
+            var objDAL = DAL.GetInstance();
+            objDAL.Conectar();
 
-            string sql = $"INSERT INTO ACCOUNT_PLANS(DESCRIPTION, TYPE) VALUES ('{Description}', '{Type}')";
-
-            dalInstance.ExecuteCommand(sql);
-            dalInstance.Disconnect();
+            var sql = $"INSERT INTO PLANO_CONTAS (DESCRICAO, TIPO) VALUES('{Descricao}', '{Tipo}')";
+            objDAL.ExecutarComandoSQL(sql);
+            objDAL.Desconectar();
         }
 
-        public void Update(int? id)
+        public void Excluir(int id)
         {
-            DAL dalInstance = DAL.GetInstance;
-            dalInstance.Connect();
+            var objDAL = DAL.GetInstance();
+            objDAL.Conectar();
 
-            string sql = $"UPDATE ACCOUNT_PLANS SET DESCRIPTION = '{Description}', TYPE = '{Type}' WHERE ID = {id}";
-
-            dalInstance.ExecuteCommand(sql);
-            dalInstance.Disconnect();
+            var sql = $"DELETE FROM PLANO_CONTAS WHERE ID={id}";
+            objDAL.ExecutarComandoSQL(sql);
+            objDAL.Desconectar();
         }
 
-        public void Delete(int id)
+        public void Atualizar(int? id)
         {
-            DAL dal = DAL.GetInstance;
-            dal.Connect();
-            string sql = $"DELETE FROM ACCOUNT_PLANS WHERE ID = {id}";
-            dal.ExecuteCommand(sql);
-            dal.Disconnect();
+            var objDAL = DAL.GetInstance();
+            objDAL.Conectar();
+
+            var sql = $"UPDATE PLANO_CONTAS SET " +
+                $"Descricao = '{Descricao}'," +
+                $"Tipo = '{Tipo}'" +
+                $"WHERE id = {id}";
+            objDAL.ExecutarComandoSQL(sql);
+            objDAL.Desconectar();
         }
 
-        public AccountPlanModel GetAccountPlanById(int? id)
+        public List<PlanoContaModel> ListaPlanoContas()
         {
-            DAL dalInstance = DAL.GetInstance;
-            dalInstance.Connect();
-
-            string sql = $"SELECT ID, DESCRIPTION, TYPE FROM ACCOUNT_PLANS WHERE ID = {id}";
-            DataTable dataTable = dalInstance.Select(sql);
-
-            AccountPlanModel accountPlan = new AccountPlanModel()
-            {
-                Id = int.Parse(dataTable.Rows[0]["id"].ToString()),
-                Description = dataTable.Rows[0]["DESCRIPTION"].ToString(),
-                Type = dataTable.Rows[0]["TYPE"].ToString()
-            };
-
-            dalInstance.Disconnect();
-
-            return accountPlan;
-        }
-
-        public List<AccountPlanModel> getAccountPlans()
-        {
-            List<AccountPlanModel> accountPlans = new List<AccountPlanModel>();
-            DAL dalInstance = DAL.GetInstance;
-            dalInstance.Connect();
-
-            string sql = "SELECT ID, DESCRIPTION, TYPE FROM ACCOUNT_PLANS";
-            DataTable dataTable = dalInstance.Select(sql);
+            List<PlanoContaModel> lista = new List<PlanoContaModel>();
+            var objDAL = DAL.GetInstance();
+            objDAL.Conectar();
+            var sql = "SELECT ID, DESCRICAO, TIPO FROM PLANO_CONTAS";
+            var dataTable = objDAL.RetornaDataTable(sql);
 
             for (int i = 0; i < dataTable.Rows.Count; i++)
             {
-                AccountPlanModel accountPlan = new AccountPlanModel()
+
+                var planoConta = new PlanoContaModel()
                 {
-                    Id = int.Parse(dataTable.Rows[i]["id"].ToString()),
-                    Description = dataTable.Rows[i]["DESCRIPTION"].ToString(),
-                    Type = dataTable.Rows[i]["TYPE"].ToString()
+                    Id = int.Parse(dataTable.Rows[i]["ID"].ToString()),
+                    Descricao = dataTable.Rows[i]["DESCRICAO"].ToString(),
+                    Tipo = dataTable.Rows[i]["TIPO"].ToString()
                 };
 
-                accountPlans.Add(accountPlan);
+                lista.Add(planoConta);
             }
+            objDAL.Desconectar();
 
-            dalInstance.Disconnect();
+            return lista;
+        }
 
-            return accountPlans;
+        public PlanoContaModel CarregarPlanoContaPorId(int? id)
+        {
+            var objDAL = DAL.GetInstance();
+            objDAL.Conectar();
+
+            var sql = $"SELECT ID, DESCRICAO, TIPO FROM PLANO_CONTAS WHERE ID = {id}";
+            var dataTable = objDAL.RetornaDataTable(sql);
+
+            var planoConta = new PlanoContaModel()
+            {
+                Id = int.Parse(dataTable.Rows[0]["ID"].ToString()),
+                Descricao = dataTable.Rows[0]["DESCRICAO"].ToString(),
+                Tipo = dataTable.Rows[0]["TIPO"].ToString()
+            };
+
+            objDAL.Desconectar();
+
+            return planoConta;
         }
     }
 }

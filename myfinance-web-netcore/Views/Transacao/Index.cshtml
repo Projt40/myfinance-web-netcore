@@ -1,38 +1,44 @@
 @{
-    ViewData["Title"] = "Plano conta";
+    ViewData["Title"] = "Transação";
 }
 
-<h3>Plano de Contas</h3>
+<h3>Transação</h3>
 <hr>
 
 <table class="table table-bordered">
     <tr>
         <th>Id</th>
-        <th>Descrição</th>
+        <th>Data</th>
         <th>Tipo</th>
+        <th>Valor</th>
+        <th>Histórico</th>
+        <th>Plano de Conta</th>
         <th>#</th>
         <th>#</th>
     </tr>
 
     @{
-        foreach (var item in (List<PlanoContaModel>)ViewBag.Lista)
+        foreach (var item in (List<TransacaoModel>)ViewBag.Lista)
         {
             <tr>
 
                 <td>@item.Id</td>
-                <td>@item.Descricao</td>
+                <td>@item.Data</td>
                 <td>@item.Tipo</td>
+                <td>@item.Valor</td>
+                <td>@item.Historico</td>
+                <td>@item.IdPlanoConta</td>
                 <td>
                     <button type='button' class='btn btn-block btn-warning'
-                    onclick="EditarPlanoConta(@item.Id.ToString())">Editar</button>
+                    onclick="EditarTransacao(@item.Id.ToString())">Editar</button>
                 </td>
                 <td>
-                    <button type='button' id="idPlanoConta" class='btn btn-block btn-danger'
+                    <button type='button' class='btn btn-block btn-danger'
                     onclick="AbrirModal(@item.Id.ToString())">Excluir</button>
                 </td>
             </tr>
 
-            <div class="modal fade" id=@("modalPlanoConta" + @item.Id.ToString()) tabindex="-1" role="dialog"
+            <div class="modal fade" id=@("modalTransacao" + @item.Id.ToString()) tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
@@ -40,11 +46,11 @@
                             <h5 class="modal-title" id="exampleModalLongTitle">Confirmação</h5>
                         </div>
                         <div class="modal-body">
-                            Deseja realmente excluir este plano de conta?
+                            Deseja realmente excluir esta transação?
                         </div>
                         <div class="modal-footer">
                             <button type="button" id="excluir" name="excluir" class="btn btn-danger"
-                            onclick="ExcluirPlanoConta(@item.Id.ToString())">Excluir</button>
+                            onclick="ExcluirTransacao(@item.Id.ToString())">Excluir</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal"
                             onclick="FecharModal(@item.Id.ToString())">Cancelar</button>
                         </div>
@@ -55,33 +61,29 @@
     }
 
 </table>
-
-<button type="button" class="btn btn-block btn-primary" onclick="CriarPlanoConta()">
-    Criar plano de conta
+<button type="button" class="btn btn-block btn-primary" onclick="CriarTransacao()">
+    Criar transação
 </button>
 
-
 <script>
-    function CriarPlanoConta() {
-        window.location.href = "../PlanoConta/CriarPlanoConta";
+    function CriarTransacao() {
+        window.location.href = "../Transacao/CriarTransacao";
     }
 
-    function EditarPlanoConta(id) {
-        window.location.href = "../PlanoConta/CriarPlanoConta/" + id;
+    function EditarTransacao(id) {
+        window.location.href = "../Transacao/CriarTransacao/" + id;
 
     }
 
-    function ExcluirPlanoConta(id) {
-        window.location.href = "../PlanoConta/ExcluirPlanoConta/" + id;
+    function ExcluirTransacao(id) {
+        window.location.href = "../Transacao/ExcluirTransacao/" + id;
     }
 
     function AbrirModal(id) {
-        $('#modalPlanoConta' + id).modal('show');
+        $('#modalTransacao' + id).modal('show');
     }
 
     function FecharModal(id) {
-        $('#modalPlanoConta' + id).modal('hide');
+        $('#modalTransacao' + id).modal('hide');
     }
-
-
 </script>

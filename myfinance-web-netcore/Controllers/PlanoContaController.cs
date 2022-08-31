@@ -1,56 +1,57 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using myfinance_web_netcore.Models;
 
 namespace myfinance_web_netcore.Controllers
 {
-    public class AccountPlanController : Controller
+    public class PlanoContaController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<PlanoContaController> _logger;
 
-        public AccountPlanController(ILogger<HomeController> logger)
+        public PlanoContaController(ILogger<PlanoContaController> logger)
         {
             _logger = logger;
         }
 
         public IActionResult Index()
         {
-            List<AccountPlanModel> accountPlans = new AccountPlanModel().getAccountPlans();
-            ViewBag.List = accountPlans;
+            var planoContasModel = new PlanoContaModel();
+            ViewBag.Lista = planoContasModel.ListaPlanoContas();
             return View();
         }
 
         [HttpGet]
-        public IActionResult CreateAccountPlan(int? id)
+        public IActionResult CriarPlanoConta(int? id)
         {
             if (id != null)
             {
-                AccountPlanModel accountPlan = new AccountPlanModel().GetAccountPlanById(id);
-                ViewBag.AccountPlan = accountPlan;
+                var planoConta = new PlanoContaModel().CarregarPlanoContaPorId(id);
+                ViewBag.PlanoConta = planoConta;
             }
-
             return View();
         }
 
         [HttpPost]
-        public IActionResult CreateAccountPlan(AccountPlanModel form)
+        public IActionResult CriarPlanoConta(PlanoContaModel formulario)
         {
-            if (form.Id == null)
-            {
-                form.Insert();
-            }
+            if (formulario.Id == null)
+                formulario.Inserir();
             else
-            {
-                form.Update(form.Id);
-            }
+                formulario.Atualizar(formulario.Id);
 
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public IActionResult DeleteAccountPlan(int id)
+        public IActionResult ExcluirPlanoConta(int id)
         {
-            new AccountPlanModel().Delete(id);
+            new PlanoContaModel().Excluir(id);
             return RedirectToAction("Index");
         }
+
     }
 }

@@ -1,58 +1,62 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace myfinance_web_netcore.Infra {
-    public class DAL {
-        private SqlConnection Connection;
-        private string ConnectionString;
+namespace myfinance_web_netcore.Infra
+{
+    public class DAL
+    {
+        private SqlConnection conn;
+
+        private string connectionString;
+
         public static IConfiguration? Configuration;
 
         private static DAL? Instance;
 
-        public static DAL GetInstance
+        public static DAL GetInstance()
         {
-            get{
-                if (Instance == null) {
-                    Instance = new();
-                }
-
-                return Instance;
+            if (Instance == null) {
+                Instance = new();
             }
+            return Instance;
         }
 
-        public DAL()
+        private DAL()
         {
-            ConnectionString = Configuration.GetValue<string>("ConnectionString");
-            Connection = new();
-            Connection.ConnectionString = ConnectionString;
+            connectionString = Configuration.GetValue<string>("connectionString");
         }
 
-        public void Connect()
-        { 
-            if (Connection.State != ConnectionState.Open) 
-            {
-                Connection.Open();  
-            }
-        }
-
-        public void Disconnect()
+        public void Conectar()
         {
-            Connection.Close();
+            conn = new();
+            conn.ConnectionString = connectionString;
+            conn.Open();
+
         }
 
-        public DataTable Select(string sql)
+        public void Desconectar()
         {
-            DataTable dataTable = new();
-            SqlDataAdapter adapter = new(sql, Connection);
-            adapter.Fill(dataTable);
+            conn.CloseAsync();
+        }
 
+        public DataTable RetornaDataTable(string sql)
+        {
+            var dataTable = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter(sql, conn);
+            da.Fill(dataTable);
+            
             return dataTable;
         }
 
-        public void ExecuteCommand(string sql)
+        //CRUD
+        public void ExecutarComandoSQL(string sql)
         {
-            SqlCommand command = new(sql, Connection);
-            command.ExecuteNonQuery();
+            SqlCommand comando = new SqlCommand(sql, conn);
+            comando.ExecuteNonQuery();
         }
     }
 }
